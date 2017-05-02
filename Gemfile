@@ -24,9 +24,6 @@ gem 'devise'
 gem 'devise_token_auth'
 gem 'omniauth'
 
-# manage Procfile-based applications
-gem 'foreman'
-
 # Reform provides form objects to run validations for one or multiple models
 gem 'reform', '>= 2.2.0'
 gem 'reform-rails'
@@ -35,6 +32,8 @@ gem 'dry-validation'
 gem 'rack-cors', require: 'rack/cors'
 
 gem 'pundit'
+
+gem 'active_model_serializers', '~> 0.10.5'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development

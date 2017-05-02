@@ -11,9 +11,9 @@ export default class ManagementDropdownAdmin extends React.Component {
   render() {
     return (
       <ManagementDropdown>
-        <MenuItem eventKey={3.1} href="/management/shippers">Shippers</MenuItem>
-        <MenuItem eventKey={3.2} href="/management/shipments">Shipments</MenuItem>
-        <MenuItem eventKey={3.3} href="/management/rates">Rates</MenuItem>
+        <MenuItem eventKey={3.1} href="/management/admin/shippers">Shippers</MenuItem>
+        <MenuItem eventKey={3.2} href="/management/admin/shipments">Shipments</MenuItem>
+        <MenuItem eventKey={3.3} href="/management/admin/rates">Rates</MenuItem>
       </ManagementDropdown>
     )
   }

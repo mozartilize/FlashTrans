@@ -1,6 +1,7 @@
 class ApiController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
 
+  before_action :authenticate_api_user!
   before_action :set_response_headers
 
   def set_response_headers

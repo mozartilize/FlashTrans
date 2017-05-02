@@ -15,6 +15,8 @@ Rails.application.routes.draw do
       end
 
       resources :shippers
+      resources :rates
+      resources :services
     end
   end
 
