@@ -1,3 +1,4 @@
 class WeightSerializer < ActiveModel::Serializer
-  attributes :weight, :degree, :bonus
+  attributes :id, :weight, :degree, :bonus
+  has_many :rates
 end

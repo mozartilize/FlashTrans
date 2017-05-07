@@ -1,3 +1,3 @@
 class ServiceRate < ActiveModelSerializers::Model
-  attributes :code, :name, :rates
+  attributes :code, :name, :weights
 end

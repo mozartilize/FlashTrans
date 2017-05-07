@@ -25,9 +25,9 @@ gem 'devise_token_auth'
 gem 'omniauth'
 
 # Reform provides form objects to run validations for one or multiple models
+gem 'dry-validation'
 gem 'reform', '>= 2.2.0'
 gem 'reform-rails'
-gem 'dry-validation'
 
 gem 'rack-cors', require: 'rack/cors'
 
@@ -41,16 +41,17 @@ gem 'active_model_serializers', '~> 0.10.5'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
+  gem 'pry-byebug'
+  gem 'pry-rails'
 end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
-  gem 'listen', '~> 3.0.5'
   gem 'faker'
-  gem 'sprockets-rails'
-  gem 'pry-rails'
-  gem 'pry-byebug'
+  gem 'listen', '~> 3.0.5'
   gem 'rubocop'
+  gem 'spring'
+  gem 'sprockets-rails'
+  gem 'web-console', '>= 3.3.0'
 end
 

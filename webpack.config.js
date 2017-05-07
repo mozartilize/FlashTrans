@@ -13,6 +13,7 @@ module.exports = {
     signup: "./scenes/signup/index.jsx",
     login: "./scenes/login/index.jsx",
     management_admin_shippers: "./scenes/management/admin/shippers/index.jsx",
+    management_admin_rates: "./scenes/management/admin/rates/index.jsx",
     vendors: "./vendors/vendors.js"
   },
   output: {
@@ -72,5 +73,6 @@ module.exports = {
         loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
       }
     ]
-  }
+  },
+  devtool: 'source-map'
 };

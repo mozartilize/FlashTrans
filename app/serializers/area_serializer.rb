@@ -1,3 +1,3 @@
 class AreaSerializer < ActiveModel::Serializer
-  attributes :code, :description
+  attributes :id, :code, :description
 end
