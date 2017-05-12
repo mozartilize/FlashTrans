@@ -43,7 +43,7 @@ export default class SignupForm extends React.Component {
 
   handleDatepickerChange(date) {
     let user = _.clone(this.state.user);
-    
+
     user['birthday'] = date.format("YYYYMMDD");
 
     this.setState({user: user, datepicker: date})
@@ -51,18 +51,18 @@ export default class SignupForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    
+
     const target = event.target;
 
     let submitBtn = target.querySelectorAll("input[type='submit']")[0];
     submitBtn.disabled = true;
-    
+
     axios.post(
       config.apiUrl + '/auth',
       { user: this.state.user }
     )
     .then((response) => {
-      AuthorizedToken.saveCredentialsToSessionStorage(response.headers);
+      AuthorizedToken.storeCredentials(response.headers);
       window.location.href = '/';
     })
     .catch((error) => {

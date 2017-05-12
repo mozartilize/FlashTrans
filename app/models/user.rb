@@ -9,6 +9,8 @@ class User < ApplicationRecord
   include Concerns::User
 
   belongs_to :role
+  has_many :orders
+  has_many :shipments, through: :orders
 
   delegate :name, to: :role, prefix: true
 

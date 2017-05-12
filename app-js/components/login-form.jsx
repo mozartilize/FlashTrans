@@ -39,7 +39,8 @@ export default class LoginForm extends React.Component {
       window.location.href = '/';
     })
     .catch((error) => {
-      console.log(error);
+      alert('Email or password is not correct')
+      submitBtn.disabled = false;
     });
   }
 

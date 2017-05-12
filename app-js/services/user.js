@@ -14,7 +14,7 @@ class User {
     }
     else {
       return new Promise((resolve, reject) => {
-        resolve({data: {data: null}});
+        reject('No authentication tokens');
       });
     }
   }

@@ -87,13 +87,15 @@ class App extends React.Component {
       <Router>
         <div>
           <MainNavbar currentUser={this.state.currentUser} />
-          <ul>
-            <li><Link to="/management/admin/shippers">Shipper list</Link></li>
-            <li><Link to="/management/admin/shippers/new">Create shipper</Link></li>
-          </ul>
+          <div className="container">
+            <ul>
+              <li><Link to="/management/admin/shippers">Shipper list</Link></li>
+              <li><Link to="/management/admin/shippers/new">Create shipper</Link></li>
+            </ul>
 
-          <Route exact path="/management/admin/shippers" component={ShipperList} />
-          <Route path="/management/admin/shippers/new" component={ShipperCreationForm} />
+            <Route exact path="/management/admin/shippers" component={ShipperList} />
+            <Route path="/management/admin/shippers/new" component={ShipperCreationForm} />
+          </div>
         </div>
       </Router>
     );

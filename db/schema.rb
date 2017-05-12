@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170501080951) do
+ActiveRecord::Schema.define(version: 20170511141616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "addresses", force: :cascade do |t|
+    t.integer  "street_no",   null: false
+    t.string   "street_name", null: false
+    t.integer  "city_id",     null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["street_no", "street_name", "city_id"], name: "index_addresses_on_street_no_and_street_name_and_city_id", unique: true, using: :btree
+  end
 
   create_table "areas", force: :cascade do |t|
     t.string   "code",                    null: false
@@ -27,6 +36,15 @@ ActiveRecord::Schema.define(version: 20170501080951) do
     t.integer  "area_id",                null: false
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.integer  "user_id",                null: false
+    t.integer  "service_id",             null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "source_address_id",      null: false
+    t.integer  "destination_address_id", null: false
   end
 
   create_table "rates", force: :cascade do |t|
@@ -52,6 +70,21 @@ ActiveRecord::Schema.define(version: 20170501080951) do
     t.datetime "updated_at",             null: false
   end
 
+  create_table "shipments", force: :cascade do |t|
+    t.integer  "shipper_id"
+    t.integer  "order_id",     null: false
+    t.float    "weight"
+    t.float    "rate_weight"
+    t.float    "rate_price"
+    t.float    "bonus_weight"
+    t.float    "bonus_price"
+    t.float    "cost"
+    t.integer  "status",       null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["order_id"], name: "index_shipments_on_order_id", unique: true, using: :btree
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "provider",               default: "email", null: false
     t.string   "uid",                    default: "",      null: false
@@ -68,7 +101,6 @@ ActiveRecord::Schema.define(version: 20170501080951) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
-    t.string   "name"
     t.string   "email"
     t.string   "first_name"
     t.string   "last_name"
@@ -87,17 +119,23 @@ ActiveRecord::Schema.define(version: 20170501080951) do
 
   create_table "weights", force: :cascade do |t|
     t.integer  "service_id", null: false
-    t.integer  "degree",     null: false
     t.float    "weight",     null: false
     t.boolean  "bonus",      null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["service_id", "degree"], name: "index_weights_on_service_id_and_degree", unique: true, using: :btree
+    t.index ["service_id", "weight", "bonus"], name: "index_weights_on_service_id_and_weight_and_bonus", unique: true, using: :btree
   end
 
+  add_foreign_key "addresses", "cities", on_delete: :restrict
   add_foreign_key "cities", "areas", on_delete: :restrict
-  add_foreign_key "rates", "areas", column: "destination_area_id", on_delete: :restrict
-  add_foreign_key "rates", "weights"
+  add_foreign_key "orders", "addresses", column: "destination_address_id", on_delete: :restrict
+  add_foreign_key "orders", "addresses", column: "source_address_id", on_delete: :restrict
+  add_foreign_key "orders", "services", on_delete: :restrict
+  add_foreign_key "orders", "users", on_delete: :cascade
+  add_foreign_key "rates", "areas", column: "destination_area_id", on_delete: :cascade
+  add_foreign_key "rates", "weights", on_delete: :cascade
+  add_foreign_key "shipments", "orders", on_delete: :restrict
+  add_foreign_key "shipments", "users", column: "shipper_id", on_delete: :nullify
   add_foreign_key "users", "roles"
   add_foreign_key "weights", "services", on_delete: :restrict
 end

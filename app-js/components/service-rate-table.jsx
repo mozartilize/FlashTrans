@@ -2,13 +2,13 @@ import React from 'react';
 import _ from 'lodash';
 
 import HeadingTable from './heading-table';
+import WeightRateRow from './weight-rate-row';
 
 const ServiceRateTable = (props) => {
   let headers, body, panelHeader;
   panelHeader = (
     <div>
       {`${props.service.name} (${props.service.code})`}
-      <button onClick={props.editableChange}>{props.editable ? 'Update' : 'Edit'}</button>
     </div>
   );
 
@@ -33,16 +33,15 @@ const ServiceRateTable = (props) => {
       <tbody>
         {
           props.weights.map((weight, trIndex) => (
-            <tr key={trIndex}>
-              {props.editable ? <td><input data-weight-id={weight.id} onChange={props.weightEdit} value={weight.weight}/></td> : <td>{weight.weight}</td>}
-              {
-                props.areas.map(area => {
-                  const rate = _.find(props.rates, rate => (rate.destination_area_id == area.id && rate.weight_id == weight.id));
-                  let price = rate ? rate.price : '';
-                  return props.editable ? <td key={area.code}><input data-weight-id={weight.id} data-destination-area-id={rate.destination_area_id} data-rate-id={rate.id} onChange={props.rateEdit} value={price}/></td> : <td key={area.code}>{price}</td>
-                })
-              }
-            </tr>
+            <WeightRateRow key={trIndex}
+                           editing={props.editStatus[weight.id]}
+                           weight={weight}
+                           areas={props.areas}
+                           rates={_.filter(props.rates, rate => (rate.weight_id == weight.id))}
+                           weightChangeHandle={props.weightChangeHandle}
+                           rateChangeHandle={props.rateChangeHandle}
+                           weightRowEditHandle={props.weightRowEditHandle}
+                           weightRowDeleteHandle={props.weightRowDeleteHandle}/>
           ))
         }
       </tbody>

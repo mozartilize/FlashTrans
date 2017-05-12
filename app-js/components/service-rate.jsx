@@ -1,6 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
 
+import appApi from 'services/app-api';
+
 import ServiceRateTable from './service-rate-table';
 import AddRateRow from './add-rate-row';
 
@@ -8,6 +10,26 @@ export default class ServiceRate extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      areas: props.areas,
+      service: props.service,
+      weights: props.weights,
+      rates: props.rates,
+      add: this.initAdd(props),
+      editStatus: this.initEditStatus(props),
+      editedRates: [],
+    }
+
+    this.addWeightChange  = this.addWeightChange.bind(this);
+    this.addRateChange    = this.addRateChange.bind(this);
+    this.addWeightRate    = this.addWeightRate.bind(this);
+    this.weightChangeHandle = this.weightChangeHandle.bind(this);
+    this.rateChangeHandle   = this.rateChangeHandle.bind(this);
+    this.weightRowEditHandle = this.weightRowEditHandle.bind(this);
+    this.weightRowDeleteHandle = this.weightRowDeleteHandle.bind(this);
+  }
+
+  initAdd(props) {
     let add = {
       service_id: props.service.id,
       weight: '',
@@ -19,24 +41,13 @@ export default class ServiceRate extends React.Component {
       add.rates.push({price: '', destination_area_id: area.id})
     })
 
-    this.state = {
-      areas: props.areas,
-      service: props.service,
-      weights: props.weights,
-      rates: props.rates,
-      add: add,
-      editable: false,
-      editedWeights: [],
-      editedRates: [],
-      addedRates: []
-    }
+    return add;
+  }
 
-    this.addWeightChange  = this.addWeightChange.bind(this);
-    this.addRateChange    = this.addRateChange.bind(this);
-    this.addWeightRate    = this.addWeightRate.bind(this);
-    this.weightEdit       = this.weightEdit.bind(this);
-    this.rateEdit         = this.rateEdit.bind(this);
-    this.editableChange   = this.editableChange.bind(this);
+  initEditStatus(props) {
+    let editStatus = {};
+    _.each(props.weights, weight => {editStatus[weight.id] = false});
+    return editStatus;
   }
 
   addRateChange(e) {
@@ -59,85 +70,91 @@ export default class ServiceRate extends React.Component {
   }
 
   addWeightRate(e) {
+    appApi.ready().post('/weights', { add: this.state.add}).then(res => {
+      this.setState((prevState, props) => {
+        prevState.weights.push(_.omit(res.data, ['rates']));
 
+        return {
+          weights: prevState.weights,
+          rates: prevState.rates.concat(res.data.rates),
+          add: this.initAdd(this.props)
+        }
+      })
+    }).catch(error => {
+
+    })
   }
 
-  weightEdit(e) {
+  weightChangeHandle(e) {
     const target = e.target;
     const weightId = target.getAttribute('data-weight-id');
     this.setState((prevState, props) => {
-      let newEditedWeights = _.reject(prevState.editedWeights, (weight) => (weight.id == weightId));
-      newEditedWeights.push(
-        {
-          id: weightId,
-          service_id: this.state.service.id,
-          weight: target.value,
-        }
-      )
-
       let newWeights = _.clone(prevState.weights);
       let weight = _.find(newWeights, (weight) => (weight.id == weightId));
       weight.weight = target.value;
 
-      return {editedWeights: newEditedWeights, weights: newWeights};
+      return {weights: newWeights};
     })
   }
 
-  rateEdit(e) {
+  rateChangeHandle(e) {
     const target = e.target;
     const rateId = target.getAttribute('data-rate-id');
     let newRates = _.clone(this.state.rates);
 
+    let rate = _.find(newRates, (rate) => (rate.id == rateId));
+    rate.price = target.value;
+
     this.setState((prevState, props) => {
       // edit rate
-      if (rateId) {
-        let newEditedRates = _.reject(prevState.editedRates, (rate) => (rate.id == rateId));
-        newEditedRates.push(
-          {
-            id: target.getAttribute('data-rate-id'),
-            price: target.value,
-          }
-        )
-
-        let rate = _.find(newRates, (rate) => (rate.id == rateId));
-        rate.price = target.value;
-
-        return {editedRates: newEditedRates, rates: newRates};
-      }
-      // create new one
-      else {
-        const weightId = target.getAttribute('data-weight-id');
-        const destinationAreaId = target.getAttribute('data-destination-area-id');
-        let newAddedRates = _.reject(prevState.addedRates, (rate) => (rate.weight_id == weightId && rate.destination_area_id == destinationAreaId));
-        newAddedRates.push(
-          {
-            weight_id: weightId,
-            destination_area_id: destinationAreaId,
-            price: target.value
-          }
-        )
-
-        let rate = _.find(newRates, (rate) => (rate.weight_id == weightId && rate.destination_area_id == destinationAreaId));
-        if (rate) {
-          rate.price = target.value;
-        }
-        else {
-          newRates.push({price: target.value, weight_id: weightId, destination_area_id: destinationAreaId});
-        }
-
-        return {addedRates: newAddedRates, rates: newRates};
-      }
+      let newEditedRates = _.reject(prevState.editedRates, (rate) => (rate.id == rateId));
+      newEditedRates.push(rate);
+      return {editedRates: newEditedRates, rates: newRates};
     })
   }
 
-  editableChange(e) {
-    if (this.state.editable) {
-      // do update
-      this.setState({editable: false})
+  weightRowEditHandle(e) {
+    const target = e.target;
+    const weightId = target.getAttribute('data-weight-id');
+    if (this.state.editStatus[weightId]) {
+      const weight = _.find(this.state.weights, (weight) => (weight.id == weightId));
+      const rates = _.filter(this.state.editedRates, rate => (rate.weight_id == weightId));
+      appApi.ready()
+        .put(`/weights/${weightId}`,
+             {weight: weight, rates: rates})
+        .then(res => {
+          this.setState((prevState, props) => {
+            prevState.editStatus[weightId] = false
+            return {editStatus: prevState.editStatus}
+          })
+        })
+        .catch(error => {
+
+        })
     }
     else {
-      this.setState({editable: true})
+      this.setState((prevState, props) => {
+        prevState.editStatus[weightId] = true
+        return {editStatus: prevState.editStatus}
+      })
     }
+  }
+
+  weightRowDeleteHandle(e) {
+    const target = e.target;
+    const weightId = target.getAttribute('data-weight-id');
+
+    appApi.ready().delete(`/weights/${weightId}`).then(res => {
+      this.setState((prevState, props) => (
+        {weights: _.reject(prevState.weights, weight => (weight.id == weightId)),
+         rates: _.reject(prevState.rates, rate => (rate.weight_id == weightId)),
+         editedRates: _.reject(prevState.editedRates, rate => (rate.weight_id == weightId)),
+         editStatus: _.omit(prevState.editStatus, [weightId])}
+      ))
+    })
+    .catch(error => {
+      alert(error.response.data.error)
+    })
   }
 
   render() {
@@ -147,10 +164,11 @@ export default class ServiceRate extends React.Component {
                           areas={this.state.areas}
                           weights={this.state.weights}
                           rates={this.state.rates}
-                          editable={this.state.editable}
-                          weightEdit={this.weightEdit}
-                          rateEdit={this.rateEdit}
-                          editableChange={this.editableChange} />
+                          editStatus={this.state.editStatus}
+                          weightChangeHandle={this.weightChangeHandle}
+                          rateChangeHandle={this.rateChangeHandle}
+                          weightRowEditHandle={this.weightRowEditHandle}
+                          weightRowDeleteHandle={this.weightRowDeleteHandle} />
         <AddRateRow add={this.state.add}
                     areas={this.state.areas}
                     addWeightChange={this.addWeightChange}

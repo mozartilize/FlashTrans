@@ -25,4 +25,7 @@ User.getCurrentUser().then((response) => {
     ReactDOM.render(<App currentUser={response.data.data}/>,
                     document.getElementById('app'));
   })
-  .catch((error) => {});
+  .catch((error) => {
+    ReactDOM.render(<App currentUser={null}/>,
+                    document.getElementById('app'));
+  });

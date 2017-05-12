@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       resources :areas
       resources :weights
       resources :services
+      resources :cities
       get 'service-rates', to: 'service_rates#index'
     end
   end
@@ -30,6 +31,10 @@ Rails.application.routes.draw do
     namespace :admin do
       resources :shippers, only: :index
       resources :rates, only: :index
+    end
+
+    namespace :user do
+      resources :orders, only: :index
     end
   end
 end

@@ -1,10 +1,10 @@
 class Api::V1::UsersController < DeviseTokenAuth::RegistrationsController
-  skip_before_action :authenticate_api_user!,
-                     if: proc { |c|
-                       controller_referrer = Rails.application.routes.recognize_path(request.referrer)
-                       c.action_name == 'create' &&
-                       controller_referrer[:controller] == 'users'
-                     }
+  # skip_before_action :authenticate_api_user!,
+  #                    if: proc { |c|
+  #                      controller_referrer = Rails.application.routes.recognize_path(request.referrer)
+  #                      c.action_name == 'create' &&
+  #                      controller_referrer[:controller] == 'users'
+  #                    }
   skip_before_action :verify_authenticity_token, only: :create
 
 
