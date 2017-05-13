@@ -1,21 +1,32 @@
 class OrderForm < Reform::Form
 
-  properties :service_id, :user_id
+  property :service_id
+  property :user_id, prepopulator: ->(options) { self.user_id = options[:user_id] }
   property :source_address, populator: :address_populator, form: AddressForm
   property :destination_address, populator: :address_populator, form: AddressForm
 
   validation do
     configure do
+      option :form
+
       predicates(IsRecord)
+
+      def different_addresses?
+        form.source_address.street_no != form.destination_address.street_no ||
+        form.source_address.street_name != form.destination_address.street_name ||
+        form.source_address.city_id != form.destination_address.city_id
+      end
 
       def self.messages
         super.merge(
-          en: {errors: {is_record?: 'id is not valid'}}
+          en: {errors: {is_record?: 'id is not valid',
+                        different_addresses?: 'must be different with destination address'}}
         )
       end
     end
     required(:service_id).filled(is_record?: Service)
     required(:user_id).filled(is_record?: User)
+    required(:source_address, &:different_addresses?)
   end
 
   private

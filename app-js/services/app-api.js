@@ -9,8 +9,6 @@ class AppApi {
         baseURL: config.apiUrl,
       });
 
-
-    // FIXME: does it not work with post's response?
     this.instance.interceptors.response.use(response => {
         if (response.headers['access-token'] && response.headers['client'] && response.headers['uid']) {
           AuthorizedToken.storeCredentials(response.headers);

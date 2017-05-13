@@ -46,3 +46,5 @@ DeviseTokenAuth.setup do |config|
   # do so by enabling this flag. NOTE: This feature is highly experimental!
   # config.enable_standard_devise_support = false
 end
+
+DeviseTokenAuth::ApplicationController.include Extends::ResponseHeaders

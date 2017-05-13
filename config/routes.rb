@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       resources :weights
       resources :services
       resources :cities
+      resources :orders
       get 'service-rates', to: 'service_rates#index'
     end
   end

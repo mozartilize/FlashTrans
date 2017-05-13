@@ -1,6 +1,5 @@
 class AuthorizedToken {
   static storeCredentials(credentials) {
-    console.log('request done, i must to save credentials');
     this.storeClientToken(credentials['client']);
     this.storeAccessToken(credentials['access-token']);
     this.storeUId(credentials['uid']);
