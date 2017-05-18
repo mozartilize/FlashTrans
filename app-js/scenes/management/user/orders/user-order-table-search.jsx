@@ -16,6 +16,10 @@ export default class UserOrderTableSearch extends React.Component {
     this.handleUserOrderSearch = this.handleUserOrderSearch.bind(this);
   }
 
+  // componentWillRecieveProps(nextProps) {
+  //   this.setState({orders: nextProps.orders})
+  // }
+
   handleUserOrderSearch(e) {
     console.log('hehe');
     e.preventDefault();

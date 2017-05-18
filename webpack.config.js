@@ -14,6 +14,8 @@ module.exports = {
     login: "./scenes/login/index.jsx",
     management_admin_shippers: "./scenes/management/admin/shippers/index.jsx",
     management_admin_rates: "./scenes/management/admin/rates/index.jsx",
+    management_admin_shipments: "./scenes/management/admin/shipments/index.jsx",
+    management_shipper_shipments: "./scenes/management/shipper/shipments/index.jsx",
     management_user_orders: "./scenes/management/user/orders/index.jsx",
     vendors: "./vendors/vendors.js"
   },

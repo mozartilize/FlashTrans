@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       resources :services
       resources :cities
       resources :orders
+      resources :order_statuses, path: '/order-statuses'
       get 'service-rates', to: 'service_rates#index'
     end
   end
@@ -32,6 +33,7 @@ Rails.application.routes.draw do
     namespace :admin do
       resources :shippers, only: :index
       resources :rates, only: :index
+      resources :shipments, only: :index
     end
 
     namespace :user do

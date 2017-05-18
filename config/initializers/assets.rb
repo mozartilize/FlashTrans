@@ -15,5 +15,7 @@ Rails.application.config.assets.precompile += %w(
   signup/index.js
   management_admin_shippers/index.js
   management_admin_rates/index.js
+  management_admin_shipments/index.js
+  management_shipper_shipments/index.js
   management_user_orders/index.js
 )

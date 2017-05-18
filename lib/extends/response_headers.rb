@@ -7,7 +7,6 @@ module Extends::ResponseHeaders
   end
 
   def set_response_headers
-    binding.pry
     # TODO: Remove this once the following issue is fixed in DTA
     # https://github.com/lynndylanhurley/devise_token_auth/issues/702
     # response.headers["Cache-Control"] = "no-cache, no-store"

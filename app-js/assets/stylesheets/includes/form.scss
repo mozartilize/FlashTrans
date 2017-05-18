@@ -2,3 +2,10 @@
   max-width: 500px;
   margin: 0 auto;
 }
+
+.form-inline {
+  .react-datepicker__input-container {
+    display: inline-block !important;
+    margin: 0 10px 0 10px;
+  }
+}

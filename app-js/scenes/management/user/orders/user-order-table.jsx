@@ -10,6 +10,7 @@ const UserOrderTable = (props) => (
         <th>Destination Address</th>
         <th>Created at</th>
         <th>Status</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -21,7 +22,18 @@ const UserOrderTable = (props) => (
             <td>{`${order.source_address.street_no} ${order.source_address.street_name}, ${order.source_address.city.name}`}</td>
             <td>{`${order.destination_address.street_no} ${order.destination_address.street_name}, ${order.destination_address.city.name}`}</td>
             <td>{order.created_at}</td>
-            <td>{order.status}</td>
+            <td>{order.status.status}</td>
+            {
+              order.status.status === 'Unprocessed' ?
+                <td>
+                  <div className="form-inline">
+                    <button className="button" data-order-id={order.id}>Edit</button>
+                    <button className="button" data-order-id={order.id}>Delete</button>
+                  </div>
+                </td>
+              : <td></td>
+            }
+
           </tr>
         ))
       }

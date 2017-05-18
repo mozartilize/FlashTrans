@@ -1,15 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
 import axios from 'axios';
-
-import MainNavbar from 'components/navbar/main-navbar';
-import OrderForm from 'components/order-form';
-import OrderUserTableSearch from './user-order-table-search';
 
 import User from 'services/user';
 import appApi from 'services/app-api';
 
 import mainCSS from 'assets/stylesheets/main.scss';
+
+import MainNavbar from 'components/navbar/main-navbar';
+import OrderForm from 'components/order-form';
+import OrderUserTableSearch from './user-order-table-search';
+
 
 class App extends React.Component {
   constructor(props) {
@@ -59,26 +65,31 @@ class App extends React.Component {
     submitBtn.disabled = true;
 
     appApi.ready().post('/orders', {order: this.state.order}).then(res => {
-
+      const addedOrder = res.data;
+      this.setState((prevState, props) => ({orders: prevState.orders.unshift(addedOrder)}))
     })
     .catch(error => {})
   }
 
   render() {
     return (
-      <div>
+      <Router>
         <MainNavbar currentUser={this.state.currentUser} />
         <div className="container">
-          <OrderForm cities={this.state.cities}
-                     services={this.state.services}
-                     order={this.state.order}
-                     handleOrderInputChange={this.handleOrderInputChange}
-                     handleOrderSubmit={this.handleOrderSubmit} />
-          <hr/>
-
-          <OrderUserTableSearch orders={this.state.orders}/>
+          <ul>
+            <li><Link to="/management/user/orders">Order list</Link></li>
+            <li><Link to="/management/user/orders/new">Create order</Link></li>
+          </ul>
+          <Route exact path="/management/user/orders"
+                 render={() => <OrderForm cities={this.state.cities}
+                                          services={this.state.services}
+                                          order={this.state.order}
+                                          handleOrderInputChange={this.handleOrderInputChange}
+                                          handleOrderSubmit={this.handleOrderSubmit} />} />
+          <Route path="/management/user/orders/new"
+                 render={() => <OrderUserTableSearch orders={this.state.orders} />} />
         </div>
-      </div>
+      </Router>
     )
   }
 }

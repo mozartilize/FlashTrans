@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170511141616) do
+ActiveRecord::Schema.define(version: 20170518093154) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,13 +38,26 @@ ActiveRecord::Schema.define(version: 20170511141616) do
     t.datetime "updated_at",             null: false
   end
 
+  create_table "order_statuses", force: :cascade do |t|
+    t.string   "status",     null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status"], name: "index_order_statuses_on_status", unique: true, using: :btree
+  end
+
   create_table "orders", force: :cascade do |t|
-    t.integer  "user_id",                null: false
-    t.integer  "service_id",             null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.integer  "source_address_id",      null: false
-    t.integer  "destination_address_id", null: false
+    t.integer  "user_id",                            null: false
+    t.integer  "service_id",                         null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.integer  "source_address_id",                  null: false
+    t.integer  "destination_address_id",             null: false
+    t.string   "code",                               null: false
+    t.integer  "status_id",                          null: false
+    t.string   "receiver",               limit: 100
+    t.string   "receiver_phone"
+    t.datetime "delivered_at"
+    t.index ["code"], name: "index_orders_on_code", unique: true, using: :btree
   end
 
   create_table "rates", force: :cascade do |t|
@@ -79,7 +92,6 @@ ActiveRecord::Schema.define(version: 20170511141616) do
     t.float    "bonus_weight"
     t.float    "bonus_price"
     t.float    "cost"
-    t.integer  "status",       null: false
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
     t.index ["order_id"], name: "index_shipments_on_order_id", unique: true, using: :btree
@@ -130,6 +142,7 @@ ActiveRecord::Schema.define(version: 20170511141616) do
   add_foreign_key "cities", "areas", on_delete: :restrict
   add_foreign_key "orders", "addresses", column: "destination_address_id", on_delete: :restrict
   add_foreign_key "orders", "addresses", column: "source_address_id", on_delete: :restrict
+  add_foreign_key "orders", "order_statuses", column: "status_id", on_delete: :restrict
   add_foreign_key "orders", "services", on_delete: :restrict
   add_foreign_key "orders", "users", on_delete: :cascade
   add_foreign_key "rates", "areas", column: "destination_area_id", on_delete: :cascade
