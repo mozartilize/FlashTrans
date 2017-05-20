@@ -1,19 +1,13 @@
 import React from 'react';
+import moment from 'moment';
 
+
+import CustomDatePicker from 'components/custom-date-picker';
 import ShipperDeliveryProcessButton from './shipper-delivery-process-button';
 
 class ShipperShipmentTable extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      deliveredDate: null,
-    }
-
-    this.handledeliveredDateChange = this.handledeliveredDateChange.bind(this);
-  }
-
-  handledeliveredDateChange(date) {
-    this.setState({deliveredDate: date})
   }
 
   render() {
@@ -33,7 +27,7 @@ class ShipperShipmentTable extends React.Component {
               <th>Delivered at</th>
               <th>Weight</th>
               <th>Cost</th>
-              <th></th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -54,18 +48,19 @@ class ShipperShipmentTable extends React.Component {
                     {
                       order.status.status === 'Delivering' ?
                       <div className="form-inline">
-                        <CustomDatePicker selected={this.state.deliveredDate}
-                                          onChange={this.handledeliveredDateChange}
-                                          className="form-control" />
-                        <input type="number" className="form-control" name="deliveredHour" min={0} max={23} step={1}/>
+                        <CustomDatePicker selected={order.shipment.delivered_at ? moment(order.shipment.delivered_at) : order.shipment.delivered_at}
+                                          onChange={(date) => this.props.handleDeliveredDateChange(order.id, date)}
+                                          className="form-control"
+                                          data-order-id={order.id} />
+                        <input type="number" disabled={!order.shipment.delivered_at} className="form-control" min={0} max={23} step={1} onChange={e => this.props.handleDeliveredHourChange(order.id, e)} value={order.shipment.delivered_at ? moment(order.shipment.delivered_at).hour() : ''}/>
                         :
-                        <input type="number" className="form-control" name="deliveredMin" min={0} max={59} step={1}/>
+                        <input type="number" disabled={!order.shipment.delivered_at} className="form-control" min={0} max={59} step={1} onChange={e => this.props.handleDeliveredMinuteChange(order.id, e)} value={order.shipment.delivered_at ? moment(order.shipment.delivered_at).minute() : ''}/>
                       </div> :
                       order.shipment !== null ? order.shipment.delivered_at : ''}
                   </td>
-                  <td>{order.status.status === 'Taken' ? <input type="number" min="0.01" name="weight"/> : order.shipment === null ? '' : order.shipment.weight}</td>
-                  <td>{order.status.status === 'Taken' ? <div className="form-inline">{order.shipment !== null ? order.shipment.cost : ''} <button onClick={this.props.handleCalculate}>Calculate</button></div> : order.shipment === null ? '' : order.shipment.cost}</td>
-                  <td><ShipperDeliveryProcessButton status={order.status} handleShipperDeliveryProcess={this.props.handleShipperDeliveryProcess}/></td>
+                  <td>{order.status.status === 'Taken' ? <input data-order-id={order.id} type="number" min="0.01" value={order.shipment.weight ? order.shipment.weight : ''} onChange={this.props.handleWeightChange}/> : order.shipment === null ? '' : order.shipment.weight}</td>
+                  <td>{order.status.status === 'Taken' ? <div className="form-inline">{order.shipment !== null ? order.shipment.cost : ''} <button data-order-id={order.id} disabled={!order.shipment.weight} onClick={this.props.handleCalculate}>Calculate</button></div> : order.shipment === null ? '' : order.shipment.cost}</td>
+                  <td><ShipperDeliveryProcessButton order={order} handleShipperDeliveryProcess={this.props.handleShipperDeliveryProcess}/></td>
                 </tr>
               ))
             }

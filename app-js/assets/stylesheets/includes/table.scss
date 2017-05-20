@@ -3,3 +3,11 @@
     width: 100%;
   }
 }
+
+.overflow-x {
+  .table {
+    th, td {
+      white-space: nowrap;
+    }
+  }
+}

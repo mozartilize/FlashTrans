@@ -36,6 +36,10 @@ Rails.application.routes.draw do
       resources :shipments, only: :index
     end
 
+    namespace :shipper do
+      resources :shipments, only: :index
+    end
+
     namespace :user do
       resources :orders, only: :index
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170518093154) do
+ActiveRecord::Schema.define(version: 20170519155553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,9 +39,12 @@ ActiveRecord::Schema.define(version: 20170518093154) do
   end
 
   create_table "order_statuses", force: :cascade do |t|
-    t.string   "status",     null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "status",        null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "process_level"
+    t.integer  "role_id"
+    t.index ["process_level"], name: "index_order_statuses_on_process_level", unique: true, using: :btree
     t.index ["status"], name: "index_order_statuses_on_status", unique: true, using: :btree
   end
 
@@ -94,6 +97,7 @@ ActiveRecord::Schema.define(version: 20170518093154) do
     t.float    "cost"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.datetime "delivered_at"
     t.index ["order_id"], name: "index_shipments_on_order_id", unique: true, using: :btree
   end
 
@@ -140,6 +144,7 @@ ActiveRecord::Schema.define(version: 20170518093154) do
 
   add_foreign_key "addresses", "cities", on_delete: :restrict
   add_foreign_key "cities", "areas", on_delete: :restrict
+  add_foreign_key "order_statuses", "roles"
   add_foreign_key "orders", "addresses", column: "destination_address_id", on_delete: :restrict
   add_foreign_key "orders", "addresses", column: "source_address_id", on_delete: :restrict
   add_foreign_key "orders", "order_statuses", column: "status_id", on_delete: :restrict

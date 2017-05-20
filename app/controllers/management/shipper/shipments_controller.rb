@@ -1,3 +1,3 @@
-class Management::Shipper::ShippersController
+class Management::Shipper::ShipmentsController < ApplicationController
   def index; end
 end

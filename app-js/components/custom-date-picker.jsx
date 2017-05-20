@@ -6,7 +6,7 @@ import datepickerCSS from 'react-datepicker/dist/react-datepicker.css';
 
 const CustomDatePicker = (props) => (
   <DatePicker
-    dateFormat="MM/DD/YYYY"
+    dateFormat="YYYY-MM-DD"
     selected={props.selected}
     onChange={props.onChange}
     className={props.className}

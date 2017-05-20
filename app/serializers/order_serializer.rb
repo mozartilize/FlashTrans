@@ -11,6 +11,6 @@ class OrderSerializer < ActiveModel::Serializer
   end
 
   def created_at
-    object.created_at.strftime('%m/%d/%Y %H:%M')
+    object.created_at.strftime('%Y-%m-%d %H:%M')
   end
 end

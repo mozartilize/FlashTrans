@@ -53,6 +53,11 @@ export default class ShipperShipmentTableSearch extends React.Component {
                         table={<ShipperShipmentTable orders={this.state.filtedOrders}
                                                    shippers={this.props.shippers}
                                                    orderStatuses={this.props.orderStatuses}
-                                                   handleShipperDeliveryProcess={this.props.handleShipperDeliveryProcess} />} />
+                                                   handleShipperDeliveryProcess={this.props.handleShipperDeliveryProcess}
+                                                   handleWeightChange={this.props.handleWeightChange}
+                                                   handleCalculate={this.props.handleCalculate}
+                                                   handleDeliveredDateChange={this.props.handleDeliveredDateChange}
+                                                   handleDeliveredHourChange={this.props.handleDeliveredHourChange}
+                                                   handleDeliveredMinuteChange={this.props.handleDeliveredMinuteChange} />} />
   }
 }

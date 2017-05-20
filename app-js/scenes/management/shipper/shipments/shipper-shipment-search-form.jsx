@@ -27,7 +27,7 @@ class ShipperShipmentSearchForm extends React.Component {
 
   render() {
     return (
-      <form onSubmit={this.props.handleAdminShipmentSearch}>
+      <form onSubmit={this.props.handleShipperShipmentSearch}>
         <table className="table">
           <tbody>
             <tr>
@@ -82,19 +82,6 @@ class ShipperShipmentSearchForm extends React.Component {
                     className="form-control"
                     name="createdTo" />
                 </div>
-              </td>
-            </tr>
-            <tr>
-              <th>Shipper</th>
-              <td>
-                <select name="shipper">
-                  <option value=""></option>
-                  {
-                    this.props.shippers.map(shipper => (
-                      <option key={shipper.id} value={shipper.id}>{`${shipper.first_name} ${shipper.last_name}`}</option>
-                    ))
-                  }
-                </select>
               </td>
             </tr>
             <tr>

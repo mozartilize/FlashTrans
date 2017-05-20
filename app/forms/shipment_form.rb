@@ -6,7 +6,8 @@ class ShipmentForm < Reform::Form
              :rate_price,
              :bonus_weight,
              :bonus_price,
-             :cost
+             :cost,
+             :delivered_at
 
   validation do
     configure do

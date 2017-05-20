@@ -10,5 +10,9 @@ class Order < ApplicationRecord
 
   scope :by_user_id, ->(user_id) { where(user_id: user_id) }
 
+  scope :by_shipper_id, ->(shipper_id) {
+    joins(:shipment).where(shipments: { shipper_id: shipper_id })
+  }
+
   scope :latest_ordered, -> { order(created_at: :desc) }
 end

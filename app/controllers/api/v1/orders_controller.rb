@@ -5,6 +5,8 @@ class Api::V1::OrdersController < ApiController
       orders_render(Order.all.latest_ordered)
     elsif current_api_user.role_name == 'user'
       orders_render(Order.by_user_id(current_api_user.id).latest_ordered)
+    elsif current_api_user.role_name == 'shipper'
+      order_render(Order.by_shipper_id(current_api_user.id).latest_ordered)
     else
       render status: 400
     end
