@@ -22,18 +22,14 @@ const UserOrderTable = (props) => (
             <td>{`${order.source_address.street_no} ${order.source_address.street_name}, ${order.source_address.city.name}`}</td>
             <td>{`${order.destination_address.street_no} ${order.destination_address.street_name}, ${order.destination_address.city.name}`}</td>
             <td>{order.created_at}</td>
-            <td>{order.status.status}</td>
             {
               order.status.status === 'Unprocessed' ?
-                <td>
-                  <div className="form-inline">
-                    <button className="button" data-order-id={order.id}>Edit</button>
-                    <button className="button" data-order-id={order.id}>Delete</button>
-                  </div>
+                <td className="text-nowrap">
+                  <button onClick={e => props.handleEdit(order.id, props.history, e)}><span className="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+                  <button onClick={e => props.handleDelete(order.id, e)}><span className="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
                 </td>
-              : <td></td>
+              : <td>{order.status.status}</td>
             }
-
           </tr>
         ))
       }

@@ -11,7 +11,7 @@ export default class ManagementDropdownShipper extends React.Component {
   render() {
     return (
       <ManagementDropdown>
-        <MenuItem eventKey={3.1} href="/management/shipments">Shipments</MenuItem>
+        <MenuItem eventKey={3.1} href="/management/shipper/shipments">Shipments</MenuItem>
       </ManagementDropdown>
     )
   }

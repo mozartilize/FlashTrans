@@ -17,9 +17,9 @@ export default class ProfileDropdown extends React.Component {
   }
 
   handleSignoutClicked() {
-    AuthorizedToken.removeCredentials();
     appApi.ready().delete('/auth/sign_out')
     .then(response => {
+      AuthorizedToken.removeCredentials();
       window.location.href = '/';
     })
     .catch(error => {})

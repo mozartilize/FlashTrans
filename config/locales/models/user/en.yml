@@ -5,4 +5,5 @@ en:
         user:
           attributes:
             birthday:
+              before: "must be at least 16 years ago"
               invalid_date: "must be at least 16 years ago"

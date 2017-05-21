@@ -59,7 +59,7 @@ class ShipperShipmentTable extends React.Component {
                       order.shipment !== null ? order.shipment.delivered_at : ''}
                   </td>
                   <td>{order.status.status === 'Taken' ? <input data-order-id={order.id} type="number" min="0.01" value={order.shipment.weight ? order.shipment.weight : ''} onChange={this.props.handleWeightChange}/> : order.shipment === null ? '' : order.shipment.weight}</td>
-                  <td>{order.status.status === 'Taken' ? <div className="form-inline">{order.shipment !== null ? order.shipment.cost : ''} <button data-order-id={order.id} disabled={!order.shipment.weight} onClick={this.props.handleCalculate}>Calculate</button></div> : order.shipment === null ? '' : order.shipment.cost}</td>
+                  <td>{order.status.status === 'Taken' ? <div className="form-inline">{order.shipment !== null ? order.shipment.cost : ''} <button className="btn" data-order-id={order.id} disabled={!order.shipment.weight} onClick={this.props.handleCalculate}>Calculate</button></div> : order.shipment === null ? '' : order.shipment.cost}</td>
                   <td><ShipperDeliveryProcessButton order={order} handleShipperDeliveryProcess={this.props.handleShipperDeliveryProcess}/></td>
                 </tr>
               ))

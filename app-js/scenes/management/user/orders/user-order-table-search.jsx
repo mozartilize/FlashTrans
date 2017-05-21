@@ -9,19 +9,17 @@ export default class UserOrderTableSearch extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      orders: props.orders,
       filtedOrders: props.orders
     }
 
     this.handleUserOrderSearch = this.handleUserOrderSearch.bind(this);
   }
 
-  // componentWillRecieveProps(nextProps) {
-  //   this.setState({orders: nextProps.orders})
-  // }
+  componentWillReceiveProps(nextProps) {
+    this.setState({filtedOrders: nextProps.orders});
+  }
 
   handleUserOrderSearch(e) {
-    console.log('hehe');
     e.preventDefault();
     const form = e.target;
     const conditions = {
@@ -34,7 +32,7 @@ export default class UserOrderTableSearch extends React.Component {
       createdYear: form.elements['createdYear'].value,
       status: form.elements['status'].value,
     }
-    let newFiltedOrders = _.clone(this.state.orders);
+    let newFiltedOrders = _.clone(this.props.orders);
     if (conditions.sourceStreetName !== '') newFiltedOrders = _.filter(newFiltedOrders, ['source_address.street_name', conditions.sourceStreetName]);
     if (conditions.sourceCity !== '') newFiltedOrders = _.filter(newFiltedOrders, ['source_address.city.name', conditions.sourceCity]);
     if (conditions.destinationStreetName !== '') newFiltedOrders = _.filter(newFiltedOrders, ['destination_address.street_name', conditions.destinationStreetName]);
@@ -46,7 +44,12 @@ export default class UserOrderTableSearch extends React.Component {
   }
 
   render() {
-    return <SearchTable searchForm={<UserOrderSearchForm handleUserOrderSearch={this.handleUserOrderSearch} />}
-                        table={<UserOrderTable orders={this.state.filtedOrders} />} />
+    return <SearchTable searchForm={<UserOrderSearchForm
+                                      orderStatuses={this.props.orderStatuses}
+                                      handleUserOrderSearch={this.handleUserOrderSearch} />}
+                        table={<UserOrderTable history={this.props.history}
+                                               orders={this.state.filtedOrders}
+                                               handleEdit={this.props.handleEdit}
+                                               handleDelete={this.props.handleDelete} />} />
   }
 }

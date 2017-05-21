@@ -28,7 +28,18 @@ const UserOrderSearchForm = (props) => (
         </tr>
         <tr>
           <th>Status</th>
-          <td colSpan="3"><div className="form-inline"><select className="form-control" name="status"></select></div></td>
+          <td colSpan="3">
+            <div className="form-inline">
+              <select className="form-control" name="status">
+                <option value=""></option>
+                {
+                  props.orderStatuses.map(status => (
+                    <option key={status.id} value={status.id}>{status.status}</option>
+                  ))
+                }
+              </select>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>

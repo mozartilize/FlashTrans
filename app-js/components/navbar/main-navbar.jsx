@@ -24,7 +24,6 @@ export default class MainNavbar extends React.Component {
     let pullRightItem, managementDropdown;
     // if (Object.keys(currentUser).length !== 0) {
     if (currentUser !== null) {
-      console.log(currentUser);
       pullRightItem = <Nav pullRight><ProfileDropdown user={currentUser} /></Nav>;
 
       switch (currentUser.role.name) {

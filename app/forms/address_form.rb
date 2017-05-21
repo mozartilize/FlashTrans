@@ -12,6 +12,6 @@ class AddressForm < Reform::Form
       end
     end
     required(:city_id).filled(is_record?: City)
-    required(:street_no).filled(:int?).value(gteq?: 1)
+    required(:street_no).maybe(:int?).value(gteq?: 1)
   end
 end

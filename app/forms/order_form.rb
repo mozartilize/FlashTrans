@@ -6,7 +6,7 @@ class OrderForm < Reform::Form
   property :user_id, prepopulator: ->(options) { self.user_id = options[:user_id] }
   property :source_address, populator: :address_populator!, form: AddressForm
   property :destination_address, populator: :address_populator!, form: AddressForm
-  property :status_id
+  property :status_id, prepopulator: ->(options) { self.status_id = options[:status_id] }
 
   validation do
     configure do

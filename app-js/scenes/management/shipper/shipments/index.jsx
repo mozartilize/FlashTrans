@@ -16,6 +16,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentUser: props.currentUser,
       services: props.services,
       orders: props.orders,
       orderStatuses: props.orderStatuses,
@@ -53,7 +54,6 @@ class App extends React.Component {
   }
 
   handleDeliveredDateChange(orderId, date) {
-    console.log(orderId);
     let newTime = date;
     this.setState((prevState, props) => {
       const orders = prevState.orders;

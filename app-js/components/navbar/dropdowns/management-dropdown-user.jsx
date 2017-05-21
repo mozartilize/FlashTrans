@@ -11,7 +11,7 @@ export default class ManagementDropdownUser extends React.Component {
   render() {
     return (
       <ManagementDropdown>
-        <MenuItem eventKey={3.1} href="/management/orders">Orders</MenuItem>
+        <MenuItem eventKey={3.1} href="/management/user/orders">Orders</MenuItem>
       </ManagementDropdown>
     )
   }

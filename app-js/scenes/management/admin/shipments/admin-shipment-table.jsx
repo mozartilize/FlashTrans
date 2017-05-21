@@ -60,7 +60,14 @@ class AdminShipmentTable extends React.Component {
                   </td>
                   <td>{order.shipment === null ? '' : order.shipment.weight}</td>
                   <td>{order.shipment === null ? '' : order.shipment.cost}</td>
-                  <td>{order.status.status === 'Delivered' ? <button onClick={this.props.handleCompleteShipment}>Completed</button> : ''}</td>
+                  <td>
+                    {
+                      order.status.status === 'Delivered' ?
+                        <button onClick={e => this.props.handleCompleteShipment(order.id, e)}>Completed</button> :
+                        order.status.status === 'Completed' ?
+                          <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> : ''
+                    }
+                  </td>
                 </tr>
               ))
             }

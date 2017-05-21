@@ -10,17 +10,14 @@ class AppApi {
       });
 
     this.instance.interceptors.response.use(response => {
-        console.log('hehe');
         if (response.headers['access-token'] && response.headers['client'] && response.headers['uid']) {
           AuthorizedToken.storeCredentials(response.headers);
-          console.log('save');
         }
         return response;
       }, error => {
         console.log(error.response.headers);
         if (error.response.headers['access-token'] && error.response.headers['client'] && error.response.headers['uid']) {
           AuthorizedToken.storeCredentials(error.response.headers);
-          console.log('save');
         }
         return Promise.reject(error);
       });

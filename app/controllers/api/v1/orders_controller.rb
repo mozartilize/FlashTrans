@@ -18,7 +18,8 @@ class Api::V1::OrdersController < ApiController
     form.prepopulate!(user_id: current_api_user.id,
                       code: ModelSecureToken.generate(half_len: 3,
                                                       model: Order,
-                                                      attribute: 'code'))
+                                                      attribute: 'code'),
+                      status_id: OrderStatus.find_by(status: 'unprocessed').id)
     if form.validate(params[:order])
       form.save
       order_render(form.model)
@@ -28,6 +29,7 @@ class Api::V1::OrdersController < ApiController
   end
 
   def update
+    binding.pry
     form = OrderForm.new(Order.find(params[:id]))
     if form.validate(params[:order])
       form.save
@@ -47,6 +49,14 @@ class Api::V1::OrdersController < ApiController
     else
       render nothing: true, status: 400
     end
+  end
+
+  def destroy
+    order = Order.find(params[:id])
+    order.destroy
+    render nothing: true, status: 200
+  rescue ActiveRecord::RecordNotFound
+    render json: {errors: 'Not found'}, status: 404
   end
 
   private

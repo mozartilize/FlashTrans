@@ -15,7 +15,7 @@ const ShipperDeliveryProcessButton = (props) => {
     value = 'Delivered';
   }
   if (value)
-    return <button disabled={disabled} data-order-id={props.order.id} data-next-process={value} onClick={props.handleShipperDeliveryProcess}>{value}</button>;
+    return <button className="btn" disabled={disabled} data-order-id={props.order.id} data-next-process={value} onClick={props.handleShipperDeliveryProcess}>{value}</button>;
   else
     return null;
 }

@@ -55,6 +55,7 @@ export default class AdminShipmentTableSearch extends React.Component {
                         table={<AdminShipmentTable orders={this.state.filtedOrders}
                                                    shippers={this.props.shippers}
                                                    orderStatuses={this.props.orderStatuses}
-                                                   handleShipmentShipperChange={this.props.handleShipmentShipperChange} />} />
+                                                   handleShipmentShipperChange={this.props.handleShipmentShipperChange}
+                                                   handleCompleteShipment={this.props.handleCompleteShipment} />} />
   }
 }

@@ -12,31 +12,22 @@ export default class WeightRateRow extends React.Component {
   }
 
   handleWeightOnEdit(e) {
-    this.setState({editing: !this.state.editing});
-    // const target = e.target;
-    // const weightId = target.getAttribute('data-weight-id');
-    // if (this.state.editStatus[weightId]) {
-    //   const weight = _.find(this.state.weights, (weight) => (weight.id == weightId));
-    //   const rates = _.filter(this.state.editedRates, rate => (rate.weight_id == weightId));
-    //   appApi.ready()
-    //     .put(`/weights/${weightId}`,
-    //          {weight: weight, rates: rates})
-    //     .then(res => {
-    //       this.setState((prevState, props) => {
-    //         prevState.editStatus[weightId] = false
-    //         return {editStatus: prevState.editStatus}
-    //       })
-    //     })
-    //     .catch(error => {
-
-    //     })
-    // }
-    // else {
-    //   this.setState((prevState, props) => {
-    //     prevState.editStatus[weightId] = true
-    //     return {editStatus: prevState.editStatus}
-    //   })
-    // }
+    if (this.state.editing) {
+      const weight = this.props.weight;
+      const rates = _.filter(this.props.editedRates, ['weight_id', weight.id]);
+      appApi.ready()
+        .put(`/weights/${weight.id}`,
+             {weight: weight, rates: rates})
+        .then(res => {
+          this.setState({editing: !this.state.editing});
+        })
+        .catch(error => {
+          alert('Invalid');
+        })
+    }
+    else {
+      this.setState({editing: !this.state.editing});
+    }
   }
 
   render() {
