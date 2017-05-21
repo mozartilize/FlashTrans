@@ -12,6 +12,7 @@ module.exports = {
     home: "./scenes/home/index.jsx",
     signup: "./scenes/signup/index.jsx",
     login: "./scenes/login/index.jsx",
+    rates: "./scenes/rates/index.jsx",
     management_admin_shippers: "./scenes/management/admin/shippers/index.jsx",
     management_admin_rates: "./scenes/management/admin/rates/index.jsx",
     management_admin_shipments: "./scenes/management/admin/shipments/index.jsx",
@@ -60,20 +61,8 @@ module.exports = {
         loader: "file-loader"
       },
       {
-        test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
-      },
-      {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
-      },
-      {
-        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file-loader'
-      },
-      {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
+        test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
+        loader: 'url-loader'
       }
     ]
   },

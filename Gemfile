@@ -35,6 +35,8 @@ gem 'pundit'
 
 gem 'active_model_serializers', '~> 0.10.5'
 
+gem 'validates_timeliness', '~> 4.0'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

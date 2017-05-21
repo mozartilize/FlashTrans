@@ -13,9 +13,9 @@ class CreateWeightForm < Reform::Form
 
       def uniq_weight?
         !form.model.id &&
-        Weight.where(service_id: form.model.service_id,
-                     weight: form.model.weight,
-                     bonus: form.model.bonus).empty?
+        Weight.where(service_id: form.service_id,
+                     weight: form.weight,
+                     bonus: form.bonus).empty?
       end
 
       def self.messages
@@ -27,7 +27,7 @@ class CreateWeightForm < Reform::Form
     end
 
     required(:service_id).filled(is_record?: Service)
-    required(:weight) { filled? > float?  >uniq_weight? }
+    required(:weight) { filled? > float? > uniq_weight? }
     required(:bonus).filled(:bool?)
   end
 
@@ -61,8 +61,8 @@ class CreateWeightForm < Reform::Form
             under_rate = weight_index == weights.length - 1 ? nil : rates[weight_index + 1]
           end
 
-          gt_above = above_rate ? form.price > above_rate.price : true
-          lt_under = under_rate ? form.price < under_rate.price : true
+          gt_above = above_rate ? form.price >= above_rate.price : true
+          lt_under = under_rate ? form.price <= under_rate.price : true
           gt_above && lt_under
         end
 

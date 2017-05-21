@@ -10,9 +10,7 @@ import axios from 'axios';
 import User from 'services/user';
 import appApi from 'services/app-api';
 
-import mainCSS from 'assets/stylesheets/main.scss';
-
-import MainNavbar from 'components/navbar/main-navbar';
+import BaseApp from 'layouts/base';
 import OrderForm from 'components/order-form';
 import OrderUserTableSearch from './user-order-table-search';
 
@@ -73,13 +71,15 @@ class App extends React.Component {
 
   render() {
     return (
+      <BaseApp currentUser={this.state.currentUser}>
       <Router>
-        <MainNavbar currentUser={this.state.currentUser} />
-        <div className="container">
+          <div className="col-md-3">
           <ul>
             <li><Link to="/management/user/orders">Order list</Link></li>
             <li><Link to="/management/user/orders/new">Create order</Link></li>
           </ul>
+          </div>
+          <div className="col-md-8">
           <Route exact path="/management/user/orders"
                  render={() => <OrderForm cities={this.state.cities}
                                           services={this.state.services}
@@ -88,8 +88,9 @@ class App extends React.Component {
                                           handleOrderSubmit={this.handleOrderSubmit} />} />
           <Route path="/management/user/orders/new"
                  render={() => <OrderUserTableSearch orders={this.state.orders} />} />
-        </div>
+          </div>
       </Router>
+      </BaseApp>
     )
   }
 }

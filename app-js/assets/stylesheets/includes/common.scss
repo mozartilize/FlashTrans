@@ -1,3 +1,39 @@
 .overflow-x {
   overflow-x: auto;
 }
+
+.medium-height {
+  height: 400px;
+  overflow-y: auto;
+}
+
+html, body, #app, #app > div {
+  height: 100%;
+}
+
+.page-wrap {
+  min-height: 100%;
+  margin-bottom: -60px;
+  > .container {
+    margin-bottom: 30px;
+  }
+  &:after {
+    content: "";
+    display: block;
+  }
+}
+
+.footer {
+  width: 100%;
+  background-color: #f5f5f5;
+  > .container {
+    p {
+      padding: 20px 15px;
+      margin: 0;
+    }
+  }
+}
+
+.footer, .page-wrap:after {
+  height: 60px;
+}

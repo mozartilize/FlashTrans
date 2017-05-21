@@ -29,6 +29,8 @@ Rails.application.routes.draw do
   root 'home#index'
   get '/signup', to: 'users#new'
   get '/login', to: 'sessions#new'
+  resources :rates, only: :index
+
   namespace :management do
     namespace :admin do
       resources :shippers, only: :index

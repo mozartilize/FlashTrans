@@ -10,4 +10,16 @@ class Api::V1::ShippersController < ApiController
       render status: 404
     end
   end
+
+  def destroy
+    shipper = User.find(params[:id])
+    if shipper.role_name == 'shipper'
+      shipper.destroy
+      render nothing: true, status: 204
+    else
+      render json: {errors: 'Invalid'}, status: 400
+    end
+  rescue ActiveRecord::RecordNotFound
+    render nothing: true, status: 404
+  end
 end

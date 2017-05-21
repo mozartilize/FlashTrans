@@ -7,13 +7,11 @@ import {
   Link
 } from 'react-router-dom';
 
-import MainNavbar from 'components/navbar/main-navbar';
+import BaseApp from 'layouts/base';
 import appApi from 'services/app-api';
 import User from 'services/user';
 
 import ServiceRate from 'components/service-rate';
-
-import mainCSS from 'assets/stylesheets/main.scss';
 
 class App extends React.Component {
   constructor(props) {
@@ -29,38 +27,40 @@ class App extends React.Component {
 
   render() {
     return (
-      <Router>
-        <div>
-          <MainNavbar currentUser={this.state.currentUser} />
-          <div className="container">
-            <ul>
+      <BaseApp currentUser={this.state.currentUser}>
+        <Router>
+          <div>
+            <div className="col-md-3">
+              <ul>
+                {
+                  this.state.services.map(service => (
+                    <li key={service.id}><Link to={`/management/admin/rates/${service.code}`}>{service.name}</Link></li>
+                  ))
+                }
+              </ul>
+            </div>
+            <div className="col-md-8">
               {
                 this.state.services.map(service => (
-                  <li key={service.id}><Link to={`/management/admin/rates/${service.code}`}>{service.name}</Link></li>
+                  <Route key={service.code}
+                        path={`/management/admin/rates/${service.code}`}
+                        render={() => <ServiceRate service={service}
+                                                    areas={this.state.areas}
+                                                    weights={this.state.weights}
+                                                    rates={this.state.rates} />}
+                  />
                 ))
               }
-            </ul>
-            {
-              this.state.services.map(service => (
-                <Route key={service.code}
-                       path={`/management/admin/rates/${service.code}`}
-                       render={() => <ServiceRate service={service}
-                                                  areas={this.state.areas}
-                                                  weights={this.state.weights}
-                                                  rates={this.state.rates} />}
-                />
-              ))
-            }
+            </div>
           </div>
-        </div>
-      </Router>
+        </Router>
+      </BaseApp>
     )
   }
 }
 
 
 User.getCurrentUser().then(response => {
-  console.log(response.data)
   axios.all([appApi.ready().get('/services'),
             appApi.ready().get('/areas'),
             appApi.ready().get('/weights'),

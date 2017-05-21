@@ -9,7 +9,9 @@ class Api::V1::WeightsController < ApiController
     form = CreateWeightForm.new(Weight.new)
     if form.validate(params[:add])
       form.save
-      render json: form.model, include: ['rates'], status: 201
+      render json: form.model, serializer: WeightRateSerializer,
+             include: ['rates'],
+             status: 201
     else
       render json: form.errors, status: 400
     end

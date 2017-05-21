@@ -15,6 +15,7 @@ const ServiceRateTable = (props) => {
   headers = (
     <thead>
       <tr>
+        <th rowSpan={2}></th>
         <th rowSpan={2}>Weights</th>
         <th colSpan={props.areas.length}>Destination Area</th>
       </tr>
@@ -34,25 +35,47 @@ const ServiceRateTable = (props) => {
         {
           props.weights.map((weight, trIndex) => (
             <WeightRateRow key={trIndex}
-                           editing={props.editStatus[weight.id]}
                            weight={weight}
                            areas={props.areas}
                            rates={_.filter(props.rates, rate => (rate.weight_id == weight.id))}
-                           weightChangeHandle={props.weightChangeHandle}
-                           rateChangeHandle={props.rateChangeHandle}
-                           weightRowEditHandle={props.weightRowEditHandle}
-                           weightRowDeleteHandle={props.weightRowDeleteHandle}/>
+                           handleWeightChange={props.handleWeightChange}
+                           handleWeightOnBlur={props.handleWeightOnBlur}
+                           handleRateChange={props.handleRateChange}
+                           handleRateOnBlur={props.handleRateOnBlur}
+                           handleWeightOnDelete={props.handleWeightOnDelete}/>
           ))
         }
+        <tr>
+          <td><button onClick={props.handleAddWeightRate}>Add</button></td>
+          <td>
+            <input type="number" step="0.01" value={props.add.weight} onChange={props.handleAddingWeightChange} />
+            <div className="form-inline">
+              <span>Bonus:</span><input type="checkbox" className="form-control" readOnly disabled checked={props.add.bonus}/>
+            </div>
+          </td>
+          {
+            props.areas.map(area => {
+              const rate = _.find(props.add.rates, rate => (rate.destination_area_id === area.id));
+              const price = rate ? rate.price : '';
+              return (
+                <td key={area.code}>
+                  <input type="number" step="100" value={price} onChange={(e) => props.handleAddingRateChange(area.id, e)} />
+                </td>
+              )
+            })
+          }
+        </tr>
       </tbody>
     );
   }
 
   return (
-    <HeadingTable
-      panelHeader={panelHeader}
-      headers={headers}
-      body={body} />
+    <div className="">
+      <HeadingTable
+        panelHeader={panelHeader}
+        headers={headers}
+        body={body} />
+    </div>
   )
 }
 

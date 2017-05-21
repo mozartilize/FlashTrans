@@ -8,9 +8,8 @@ import User from 'services/user';
 import appApi from 'services/app-api';
 import {determineWeightRate, calculateCost} from 'services/cost-calculator';
 
+import BaseApp from 'layouts/base';
 import ShipperShipmentTableSearch from './shipper-shipment-table-search';
-
-import mainCSS from 'assets/stylesheets/main.scss';
 
 
 class App extends React.Component {
@@ -131,20 +130,18 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <div className="container">
-          <ShipperShipmentTableSearch
-            services={this.state.services}
-            orders={this.state.orders}
-            orderStatuses={this.state.orderStatuses}
-            handleShipperDeliveryProcess={this.handleShipperDeliveryProcess}
-            handleWeightChange={this.handleWeightChange}
-            handleCalculate={this.handleCalculate}
-            handleDeliveredDateChange={this.handleDeliveredDateChange}
-            handleDeliveredHourChange={this.handleDeliveredHourChange}
-            handleDeliveredMinuteChange={this.handleDeliveredMinuteChange} />
-        </div>
-      </div>
+      <BaseApp currentUser={this.state.currentUser}>
+        <ShipperShipmentTableSearch
+          services={this.state.services}
+          orders={this.state.orders}
+          orderStatuses={this.state.orderStatuses}
+          handleShipperDeliveryProcess={this.handleShipperDeliveryProcess}
+          handleWeightChange={this.handleWeightChange}
+          handleCalculate={this.handleCalculate}
+          handleDeliveredDateChange={this.handleDeliveredDateChange}
+          handleDeliveredHourChange={this.handleDeliveredHourChange}
+          handleDeliveredMinuteChange={this.handleDeliveredMinuteChange} />
+      </BaseApp>
     )
   }
 }

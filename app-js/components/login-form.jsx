@@ -1,12 +1,9 @@
 import React from 'react';
-import DatePicker from 'react-datepicker';
 import _ from 'lodash';
-import moment from 'moment';
-import appApi from 'services/app-api';
-import AuthorizedToken from 'services/authorized-token';
 
-import datepickerCSS from 'react-datepicker/dist/react-datepicker.css';
-import mainCSS from 'assets/stylesheets/main.scss';
+import appApi from 'services/app-api';
+
+import CustomForm from 'components/custom-form';
 
 export default class LoginForm extends React.Component {
   constructor(props) {
@@ -16,7 +13,8 @@ export default class LoginForm extends React.Component {
       user: {
         email: '',
         password: '',
-      }
+      },
+      errors: ''
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,6 +28,7 @@ export default class LoginForm extends React.Component {
 
     let submitBtn = target.querySelectorAll("input[type='submit']")[0];
     submitBtn.disabled = true;
+    this.setState({errors: ''});
 
     appApi.ready().post(
       '/auth/sign_in',
@@ -39,7 +38,7 @@ export default class LoginForm extends React.Component {
       window.location.href = '/';
     })
     .catch((error) => {
-      alert('Email or password is not correct')
+      this.setState({errors: 'Email or password is not correct'});
       submitBtn.disabled = false;
     });
   }
@@ -59,19 +58,27 @@ export default class LoginForm extends React.Component {
 
   render() {
     return (
-      <form className="form-center" method="post" onSubmit={this.handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
-          <input type="email" className="form-control" id='email' name='email' value={this.state.user.email} onChange={this.handleInputChange}/>
-        </div>
+      <CustomForm
+        header={"Login"}
+        errors={this.state.errors}
+        className="form-center"
+        onSubmit={this.handleSubmit}
+        form={
+          <section>
+            <div className="form-group">
+              <label htmlFor="email">Email:</label>
+              <input type="email" className="form-control" id='email' name='email' value={this.state.user.email} onChange={this.handleInputChange}/>
+            </div>
 
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
-          <input type="password" className="form-control" id="password" name="password" value={this.state.user.password} onChange={this.handleInputChange}/>
-        </div>
+            <div className="form-group">
+              <label htmlFor="password">Password:</label>
+              <input type="password" className="form-control" id="password" name="password" value={this.state.user.password} onChange={this.handleInputChange}/>
+            </div>
 
-        <input type="submit" className="btn btn-primary" value="Log in"/>
-      </form>
+            <input type="submit" className="btn btn-primary" value="Log in"/>
+          </section>
+        }
+      />
     );
   }
 }

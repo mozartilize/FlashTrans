@@ -23,7 +23,8 @@ export default class ShipperCreattionForm extends React.Component {
         email: '',
         address: '',
         phone_number: ''
-      }
+      },
+      errors: ''
     }
   }
 
@@ -54,21 +55,28 @@ export default class ShipperCreattionForm extends React.Component {
 
     let submitBtn = target.querySelectorAll("input[type='submit']")[0];
     submitBtn.disabled = true;
+    this.setState({errors: ''})
 
     axios.post(
       config.apiUrl + '/auth',
       { user: this.state.user }
     )
     .then((response) => {
+      // window.location.href = '/management/admin/shippers';
+      this.props.history.push('/management/admin/shippers');
     })
     .catch((error) => {
-      console.log(error);
+      if (error.response) {
+        this.setState({errors: error.response.data.errors.full_messages})
+      }
+      submitBtn.disabled = false;
     });
   }
 
   render() {
     return (
       <UserForm submitBtn="Create"
+                errors={this.state.errors}
                 user={this.state.user}
                 date={this.state.datepicker}
                 onSubmit={this.handleSubmit}

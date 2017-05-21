@@ -1,4 +1,5 @@
 class Api::V1::OrdersController < ApiController
+  skip_before_action :authenticate_api_user!, only: :show
 
   def index
     if current_api_user.role_name == 'admin'
@@ -36,6 +37,16 @@ class Api::V1::OrdersController < ApiController
     end
   rescue ActiveRecord::RecordNotFound
     render status: 400
+  end
+
+  def show
+    code = params[:id]
+    order = Order.by_code(code)
+    if order
+      order_render(order)
+    else
+      render nothing: true, status: 400
+    end
   end
 
   private

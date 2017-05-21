@@ -10,8 +10,6 @@ import axios from 'axios';
 import User from 'services/user';
 import appApi from 'services/app-api';
 
-import mainCSS from 'assets/stylesheets/main.scss';
-
 import AdminShipmentTableSearch from './admin-shipment-table-search';
 
 class App extends React.Component {

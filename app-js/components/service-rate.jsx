@@ -4,36 +4,34 @@ import _ from 'lodash';
 import appApi from 'services/app-api';
 
 import ServiceRateTable from './service-rate-table';
-import AddRateRow from './add-rate-row';
 
 export default class ServiceRate extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      areas: props.areas,
-      service: props.service,
       weights: props.weights,
       rates: props.rates,
       add: this.initAdd(props),
-      editStatus: this.initEditStatus(props),
       editedRates: [],
     }
 
-    this.addWeightChange  = this.addWeightChange.bind(this);
-    this.addRateChange    = this.addRateChange.bind(this);
-    this.addWeightRate    = this.addWeightRate.bind(this);
-    this.weightChangeHandle = this.weightChangeHandle.bind(this);
-    this.rateChangeHandle   = this.rateChangeHandle.bind(this);
-    this.weightRowEditHandle = this.weightRowEditHandle.bind(this);
-    this.weightRowDeleteHandle = this.weightRowDeleteHandle.bind(this);
+    this.handleAddingWeightChange = this.handleAddingWeightChange.bind(this);
+    this.handleAddingRateChange   = this.handleAddingRateChange.bind(this);
+    this.handleAddWeightRate      = this.handleAddWeightRate.bind(this);
+    this.handleWeightChange       = this.handleWeightChange.bind(this);
+    this.handleWeightOnBlur       = this.handleWeightOnBlur.bind(this);
+    this.handleRateChange         = this.handleRateChange.bind(this);
+    this.handleRateOnBlur         = this.handleRateOnBlur.bind(this);
+    this.handleWeightOnDelete     = this.handleWeightOnDelete.bind(this);
   }
 
   initAdd(props) {
+
     let add = {
       service_id: props.service.id,
       weight: '',
-      bonus: false,
+      bonus: !_.find(props.weights, ['bonus', true]),
       rates: []
     }
 
@@ -44,35 +42,37 @@ export default class ServiceRate extends React.Component {
     return add;
   }
 
-  initEditStatus(props) {
-    let editStatus = {};
-    _.each(props.weights, weight => {editStatus[weight.id] = false});
-    return editStatus;
-  }
-
-  addRateChange(e) {
+  handleAddingRateChange(destinationAreaId, e) {
     const target = e.target;
     this.setState((prevState, props) => {
-      let newAdd = _.clone(prevState.add);
-      let rate = _.find(newAdd.rates, rate => (rate.destination_area_id == target.getAttribute('data-destination-area-id')));
-      rate.price = target.value;
+      let newAdd = prevState.add;
+      let rate = _.find(newAdd.rates, rate => (rate.destination_area_id == destinationAreaId));
+      rate.price = parseFloat(target.value);
       return {add: newAdd};
     })
   }
 
-  addWeightChange(e) {
+  handleAddingWeightChange(e) {
     const target = e.target;
     this.setState((prevState, props) => {
-      let newAdd = _.clone(prevState.add);
-      newAdd.weight = target.value;
+      let newAdd = prevState.add;
+      newAdd.weight = parseFloat(target.value);
       return {add: newAdd};
     })
   }
 
-  addWeightRate(e) {
+  handleAddWeightRate(e) {
     appApi.ready().post('/weights', { add: this.state.add}).then(res => {
       this.setState((prevState, props) => {
-        prevState.weights.push(_.omit(res.data, ['rates']));
+        if (this.state.add.bonus) {
+          prevState.weights.push(_.omit(res.data, ['rates']));
+        }
+        else {
+          const nonBonusWeights = _.filter(prevState.weights, ['bonus', false]);
+          // the index will be inserted to
+          let indx = _.sortedIndexBy(nonBonusWeights, _.omit(this.state.add, ['rates']), 'weight');
+          prevState.weights.splice(indx, 0, _.omit(res.data, ['rates']));
+        }
 
         return {
           weights: prevState.weights,
@@ -81,15 +81,14 @@ export default class ServiceRate extends React.Component {
         }
       })
     }).catch(error => {
-
+      alert('Invalid');
     })
   }
 
-  weightChangeHandle(e) {
+  handleWeightChange(weightId, e) {
     const target = e.target;
-    const weightId = target.getAttribute('data-weight-id');
     this.setState((prevState, props) => {
-      let newWeights = _.clone(prevState.weights);
+      let newWeights = prevState.weights;
       let weight = _.find(newWeights, (weight) => (weight.id == weightId));
       weight.weight = target.value;
 
@@ -97,83 +96,102 @@ export default class ServiceRate extends React.Component {
     })
   }
 
-  rateChangeHandle(e) {
+  // validate weight must be between before and after weights
+  handleWeightOnBlur(weightId, bonus, e) {
     const target = e.target;
-    const rateId = target.getAttribute('data-rate-id');
-    let newRates = _.clone(this.state.rates);
+    if (!bonus) {
+      const index = _.findIndex(this.state.weights, ['id', weightId]);
+      if (index > 0 && parseFloat(target.value) <= this.state.weights[index-1].weight ||
+          index < this.state.weights.length - 1 && parseFloat(target.value) >= this.state.weights[index+1].weight) {
+        alert('Weight must be between before and after weights');
+        this.setState((prevState, props) => {
+          let newWeights = prevState.weights;
+          let weight = _.find(newWeights, (weight) => (weight.id == weightId));
+          weight.weight = '';
+          return {weights: newWeights};
+        })
+      }
+    }
+  }
 
-    let rate = _.find(newRates, (rate) => (rate.id == rateId));
-    rate.price = target.value;
+  handleRateChange(rateInfo, e) {
+    const target = e.target;
 
     this.setState((prevState, props) => {
+      let rate = _.find(prevState.rates, rate => (
+          rate.weight_id == rateInfo.weightId &&
+          rate.destination_area_id == rateInfo.destinationAreaId
+        ));
+      rate.price = parseFloat(target.value);
       // edit rate
-      let newEditedRates = _.reject(prevState.editedRates, (rate) => (rate.id == rateId));
+      let newEditedRates = _.reject(prevState.editedRates, (rate) => (
+          rate.weight_id == rateInfo.weightId &&
+          rate.destination_area_id == rateInfo.destinationAreaId
+        ));
       newEditedRates.push(rate);
-      return {editedRates: newEditedRates, rates: newRates};
+      return {editedRates: newEditedRates, rates: prevState.rates};
     })
   }
 
-  weightRowEditHandle(e) {
+  handleRateOnBlur(rateInfo, bonus, e) {
     const target = e.target;
-    const weightId = target.getAttribute('data-weight-id');
-    if (this.state.editStatus[weightId]) {
-      const weight = _.find(this.state.weights, (weight) => (weight.id == weightId));
-      const rates = _.filter(this.state.editedRates, rate => (rate.weight_id == weightId));
-      appApi.ready()
-        .put(`/weights/${weightId}`,
-             {weight: weight, rates: rates})
-        .then(res => {
-          this.setState((prevState, props) => {
-            prevState.editStatus[weightId] = false
-            return {editStatus: prevState.editStatus}
-          })
+    if (!bonus) {
+      const nonBonusWeightIds = _.filter(this.state.weights, ['bonus', false]).map(weight => weight.id);
+      const nonBonusSameAreaRates = nonBonusWeightIds.map(id => (
+          _.find(this.state.rates, ['weight_id', id])
+        ));
+      const index = _.findIndex(nonBonusSameAreaRates, rate => (
+          rate.weight_id == rateInfo.weightId &&
+          rate.destination_area_id == rateInfo.destinationAreaId
+        ));
+      if (index > 0 && parseFloat(target.value) < nonBonusSameAreaRates[index-1].price ||
+          index < nonBonusSameAreaRates.length - 1 && parseFloat(target.value) > nonBonusSameAreaRates[index+1].price) {
+        alert('Price must be between before and after prices');
+        this.setState((prevState, props) => {
+          let newRates = prevState.rates;
+          let rate = _.find(newRates, ['id', rateInfo.rateId]);
+          rate.price = '';
+          return {rates: newRates};
         })
-        .catch(error => {
-
-        })
+      }
     }
-    else {
-      this.setState((prevState, props) => {
-        prevState.editStatus[weightId] = true
-        return {editStatus: prevState.editStatus}
+  }
+
+  handleWeightOnDelete(weightId, e) {
+    const target = e.target;
+    if (confirm('Are you sure to delete it?')) {
+      appApi.ready().delete(`/weights/${weightId}`).then(res => {
+        this.setState((prevState, props) => (
+          {
+            weights: _.reject(prevState.weights, weight => (weight.id == weightId)),
+            rates: _.reject(prevState.rates, rate => (rate.weight_id == weightId)),
+            editedRates: _.reject(prevState.editedRates, rate => (rate.weight_id == weightId)),
+            add: this.initAdd(this.props)
+          }
+        ))
+      })
+      .catch(error => {
+        alert(error.response.data.error)
       })
     }
-  }
-
-  weightRowDeleteHandle(e) {
-    const target = e.target;
-    const weightId = target.getAttribute('data-weight-id');
-
-    appApi.ready().delete(`/weights/${weightId}`).then(res => {
-      this.setState((prevState, props) => (
-        {weights: _.reject(prevState.weights, weight => (weight.id == weightId)),
-         rates: _.reject(prevState.rates, rate => (rate.weight_id == weightId)),
-         editedRates: _.reject(prevState.editedRates, rate => (rate.weight_id == weightId)),
-         editStatus: _.omit(prevState.editStatus, [weightId])}
-      ))
-    })
-    .catch(error => {
-      alert(error.response.data.error)
-    })
   }
 
   render() {
     return (
       <div>
-        <ServiceRateTable service={this.state.service}
-                          areas={this.state.areas}
+        <ServiceRateTable service={this.props.service}
+                          areas={this.props.areas}
                           weights={this.state.weights}
                           rates={this.state.rates}
-                          editStatus={this.state.editStatus}
-                          weightChangeHandle={this.weightChangeHandle}
-                          rateChangeHandle={this.rateChangeHandle}
-                          weightRowEditHandle={this.weightRowEditHandle}
-                          weightRowDeleteHandle={this.weightRowDeleteHandle} />
-        <AddRateRow add={this.state.add}
-                    areas={this.state.areas}
-                    addWeightChange={this.addWeightChange}
-                    addRateChange={this.addRateChange}
-                    addWeightRate={this.addWeightRate} />
+                          handleWeightChange={this.handleWeightChange}
+                          handleWeightOnBlur={this.handleWeightOnBlur}
+                          handleRateChange={this.handleRateChange}
+                          handleRateOnBlur={this.handleRateOnBlur}
+                          handleWeightOnDelete={this.handleWeightOnDelete}
+                          add={this.state.add}
+                          handleAddingWeightChange={this.handleAddingWeightChange}
+                          handleAddingRateChange={this.handleAddingRateChange}
+                          handleAddWeightRate={this.handleAddWeightRate} />
       </div>
     );
   }

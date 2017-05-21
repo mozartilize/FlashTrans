@@ -1,10 +1,8 @@
 import React from 'react';
-import axios from 'axios';
-import config from 'config';
-import AuthorizedToken from 'services/authorized-token';
-import UserForm from 'components/user-form';
 
-import mainCSS from 'assets/stylesheets/main.scss';
+import appApi from 'services/app-api';
+
+import UserForm from 'components/user-form';
 
 export default class SignupForm extends React.Component {
   constructor(props) {
@@ -25,7 +23,8 @@ export default class SignupForm extends React.Component {
         phone_number: '',
         password: '',
         password_confirmation: ''
-      }
+      },
+      errors: ''
     }
   }
 
@@ -56,26 +55,28 @@ export default class SignupForm extends React.Component {
 
     let submitBtn = target.querySelectorAll("input[type='submit']")[0];
     submitBtn.disabled = true;
+    this.setState({errors: ''});
 
-    axios.post(
-      config.apiUrl + '/auth',
-      { user: this.state.user }
-    )
+    appApi.ready().post('/auth', { user: this.state.user })
     .then((response) => {
-      AuthorizedToken.storeCredentials(response.headers);
       window.location.href = '/';
     })
     .catch((error) => {
-      console.log(error);
+      submitBtn.disabled = false;
+      if (error.response) {
+        this.setState({errors: error.response.data.errors.full_messages});
+      }
     });
   }
 
   render() {
     return (
       <UserForm submitBtn="Sign up"
+                header="Sign up"
                 formClasses="form-center"
                 user={this.state.user}
                 date={this.state.datepicker}
+                errors={this.state.errors}
                 onSubmit={this.handleSubmit}
                 inputChange={this.handleInputChange}
                 datepickerChange={this.handleDatepickerChange} />
