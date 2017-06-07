@@ -1,12 +1,14 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
+  # :lockable, :timeoutable and :omniauthable
+  devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable
   include DeviseTokenAuth::Concerns::User
   # this overrides `DeviseTokenAuth::Concerns::User`,
   # so put it after `include DeviseTokenAuth::Concerns::User`
   include Concerns::User
+
+  before_create :skip_confirmation!, if: "role_name == 'shipper'"
 
   belongs_to :role
   has_many :orders

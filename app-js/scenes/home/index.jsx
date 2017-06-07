@@ -4,20 +4,21 @@ import User from 'services/user';
 
 import BaseApp from 'layouts/base';
 
-import QuickTrackOrder from 'components/quick-track-order';
+import UserHome from './user-home';
+import AdminHome from './admin-home';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      currentUser: props.currentUser
-    }
   }
 
   render() {
     return (
-      <BaseApp currentUser={this.state.currentUser}>
-        <QuickTrackOrder />
+      <BaseApp currentUser={this.props.currentUser}>
+        {
+          (this.props.currentUser && this.props.currentUser.role.name == 'admin') ?
+            <AdminHome /> : <UserHome />
+        }
       </BaseApp>
     )
   }
@@ -28,6 +29,7 @@ User.getCurrentUser().then((response) => {
                     document.getElementById('app'));
   })
   .catch((error) => {
+    console.log(error);
     ReactDOM.render(<App currentUser={null}/>,
                     document.getElementById('app'));
   });

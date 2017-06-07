@@ -1,9 +1,13 @@
 class Api::V1::OrdersController < ApiController
-  skip_before_action :authenticate_api_user!, only: :show
+  skip_before_action :authenticate_api_user!, only: [:show, :per_day_stat]
 
   def index
     if current_api_user.role_name == 'admin'
-      orders_render(Order.all.latest_ordered)
+      if params[:status]
+        orders_render(Order.by_status(params[:status]).latest_ordered)
+      else
+        orders_render(Order.all.latest_ordered)
+      end
     elsif current_api_user.role_name == 'user'
       orders_render(Order.by_user_id(current_api_user.id).latest_ordered)
     elsif current_api_user.role_name == 'shipper'
@@ -29,7 +33,6 @@ class Api::V1::OrdersController < ApiController
   end
 
   def update
-    binding.pry
     form = OrderForm.new(Order.find(params[:id]))
     if form.validate(params[:order])
       form.save
@@ -57,6 +60,17 @@ class Api::V1::OrdersController < ApiController
     render nothing: true, status: 200
   rescue ActiveRecord::RecordNotFound
     render json: {errors: 'Not found'}, status: 404
+  end
+
+  def per_day_stat
+    render json: {
+      order_per_day: Order.order_per_day,
+      delivered_per_day: Order.delivered_per_day
+    }
+  end
+
+  def five_days_stat
+    render json: Order.five_days_stat
   end
 
   private

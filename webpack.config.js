@@ -12,7 +12,9 @@ module.exports = {
     home: "./scenes/home/index.jsx",
     signup: "./scenes/signup/index.jsx",
     login: "./scenes/login/index.jsx",
+    confirm_success: "./scenes/confirm-success/index.jsx",
     rates: "./scenes/rates/index.jsx",
+    services: "./scenes/services/index.jsx",
     management_admin_shippers: "./scenes/management/admin/shippers/index.jsx",
     management_admin_rates: "./scenes/management/admin/rates/index.jsx",
     management_admin_shipments: "./scenes/management/admin/shipments/index.jsx",
@@ -23,7 +25,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'app/assets/javascripts'),
     filename: "[name]/index.js",
-    publicPath: "app/assets/"
+    publicPath: "/app-js/assets/"
   },
   module: {
     rules: [
@@ -40,25 +42,19 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: [ 'style-loader', 'css-loader' ]
+        loader: ['style-loader', 'css-loader', 'resolve-url-loader']
       },
       {
         test: /\.scss$/,
-        use: [{
-          loader: "style-loader" // creates style nodes from JS strings
-        }, {
-          loader: "css-loader" // translates CSS into CommonJS
-        }, {
-          loader: "sass-loader" // compiles Sass to CSS
-        }]
+        loaders: ['style-loader', 'css-loader', 'resolve-url-loader', 'sass-loader?sourceMap']
       },
       {
         test: /\.png$/,
-        loader: "url-loader?limit=100000"
+        loader: "url-loader"
       },
       {
         test: /\.jpg$/,
-        loader: "file-loader"
+        loader: "url-loader"
       },
       {
         test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,

@@ -29,8 +29,9 @@ export default class QuickTrackOrder extends React.Component {
 
   render() {
     return (
-      <div className="col-md-8" style={{float: "none", margin: "80px auto"}}>
-        <form onSubmit={this.handleSearch} style={{'marginBottom': "20px"}}>
+      <div className="jumbotron" style={{float: "none", margin: "0 auto"}}>
+        <div className="text-center"><h2>Have an order? Track it now!</h2></div>
+        <form onSubmit={this.handleSearch} style={{'margin': "20px 0"}}>
           <div className="form-inline text-center">
             <input placeholder="Enter order code" type="text" className="form-control" value={this.state.code}
                    onChange={e => this.setState({code: e.target.value})}/>

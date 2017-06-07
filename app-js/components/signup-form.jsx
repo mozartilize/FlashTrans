@@ -59,6 +59,7 @@ export default class SignupForm extends React.Component {
 
     appApi.ready().post('/auth', { user: this.state.user })
     .then((response) => {
+      alert('An confirmation email has been sent to you. Please check you email and follow instructions.')
       window.location.href = '/';
     })
     .catch((error) => {

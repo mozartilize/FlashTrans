@@ -38,8 +38,10 @@ export default class LoginForm extends React.Component {
       window.location.href = '/';
     })
     .catch((error) => {
-      this.setState({errors: 'Email or password is not correct'});
-      submitBtn.disabled = false;
+      if (error.response) {
+        this.setState({errors: error.response.data.errors});
+        submitBtn.disabled = false;
+      }
     });
   }
 

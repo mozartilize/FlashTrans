@@ -14,13 +14,24 @@ Rails.application.routes.draw do
         get '/users' => 'users#index'
       end
 
-      resources :shippers
+      resources :shippers do
+        collection do
+          get 'count'
+        end
+      end
       resources :rates
       resources :areas
       resources :weights
       resources :services
       resources :cities
-      resources :orders
+      resources :orders do
+        collection do
+          get 'per-day-stat', to: 'orders#per_day_stat'
+          get 'five-days-stat', to: 'orders#five_days_stat'
+        end
+      end
+
+
       resources :order_statuses, path: '/order-statuses'
       get 'service-rates', to: 'service_rates#index'
     end
@@ -29,7 +40,10 @@ Rails.application.routes.draw do
   root 'home#index'
   get '/signup', to: 'users#new'
   get '/login', to: 'sessions#new'
+  get '/confirm-success', to: 'users#confirm_success'
+
   resources :rates, only: :index
+  resources :services, only: :index
 
   namespace :management do
     namespace :admin do

@@ -11,9 +11,10 @@ const CustomForm = (props) => (
       <div className="alert alert-danger" role="alert">
         {
           _.isArray(props.errors) ?
-          <ul>
-            {props.errors.map((error, indx) => (<li key={indx}>{error}</li>))}
-          </ul> :
+            props.errors.length > 1 ?
+            <ul>
+              {props.errors.map((error, indx) => (<li key={indx}>{error}</li>))}
+            </ul> : props.errors[0] :
           props.errors
         }
       </div> :

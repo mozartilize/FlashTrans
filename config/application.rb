@@ -27,7 +27,7 @@ module FlashTrans
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins '*'
+        origins 'http://lvh.me:3000'
         resource '*', :headers => :any,
                       :methods => [:get, :post, :delete, :put, :options],
                       :expose  => ['access-token', 'expiry', 'token-type', 'uid', 'client']

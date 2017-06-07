@@ -12,8 +12,10 @@ Rails.application.config.assets.precompile += %w(
   vendors/index.js
   home/index.js
   login/index.js
+  confirm_success/index.js
   signup/index.js
   rates/index.js
+  services/index.js
   management_admin_shippers/index.js
   management_admin_rates/index.js
   management_admin_shipments/index.js

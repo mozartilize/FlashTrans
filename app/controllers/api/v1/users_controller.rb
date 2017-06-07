@@ -1,7 +1,6 @@
 class Api::V1::UsersController < DeviseTokenAuth::RegistrationsController
   before_action :authenticate_api_user!
-  skip_before_action :authenticate_api_user!,
-                     if: :signup_request?
+  skip_before_action :authenticate_api_user!, if: :signup_request?
   skip_before_action :verify_authenticity_token, only: :create
   skip_after_action :update_auth_header, only: :create, if: "!!current_api_user"
 
@@ -41,10 +40,7 @@ class Api::V1::UsersController < DeviseTokenAuth::RegistrationsController
   end
 
   def signup_request?
-    c = Rails.application.routes.recognize_path(request.referrer)
-    return true if c[:controller] == 'user' && c[:action] == 'new'
-    false
-  rescue ActionController::RoutingError
-    false
+    set_user_by_token
+    current_api_user && current_api_user.role_name == 'admin' ? false : true
   end
 end

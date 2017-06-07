@@ -1,4 +1,5 @@
 class Api::V1::ShippersController < ApiController
+  skip_before_action :authenticate_api_user!, only: [:count]
 
   def index
     if current_api_user.role_name == 'admin'
@@ -21,5 +22,9 @@ class Api::V1::ShippersController < ApiController
     end
   rescue ActiveRecord::RecordNotFound
     render nothing: true, status: 404
+  end
+
+  def count
+    render json: {count: User.shippers.count}
   end
 end
